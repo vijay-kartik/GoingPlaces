@@ -1,9 +1,18 @@
+import { auth, authConfigured, isAllowed } from "@/auth";
 import DubaiMap from "@/components/DubaiMap";
+import Gate from "@/components/Gate";
 import UserMenu from "@/components/UserMenu";
 
-export default function Home() {
+export default async function Home() {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID;
+
+  // Gate the whole page behind an invited Google account. When OAuth isn't configured
+  // (local dev without credentials) the map is shown ungated so the UI can still be worked on.
+  if (authConfigured) {
+    const session = await auth();
+    if (!isAllowed(session?.user?.email)) return <Gate />;
+  }
 
   return (
     <main className="relative h-full w-full">
