@@ -44,6 +44,17 @@ export async function fetchPlaces(): Promise<Place[]> {
   return data ?? [];
 }
 
+// Google addresses often lead with a plus code ("7873+RP9 …") and end with the country,
+// which is all noise once the line is truncated. Keep the streets and districts.
+export function shortAddress(address: string | null): string | null {
+  if (!address) return null;
+  const parts = address
+    .split(" - ")
+    .map((s) => s.trim())
+    .filter((s) => s && !s.includes("+") && s !== "United Arab Emirates");
+  return parts.join(" · ") || null;
+}
+
 // One colour per list so markers and chips match. Falls back through the palette.
 const LIST_COLOURS = ["#d4a857", "#e8927c", "#7cc4e8", "#9fd48a", "#c79be8", "#e8d27c"];
 

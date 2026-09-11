@@ -37,15 +37,18 @@ function pinIcon(colour: string, active: boolean) {
   };
 }
 
-type Props = { apiKey: string; mapId?: string; places: Place[] };
+type Props = { apiKey: string; mapId?: string; places: Place[]; focusId?: string };
 
-export default function DubaiMap({ apiKey, mapId, places }: Props) {
+export default function DubaiMap({ apiKey, mapId, places, focusId }: Props) {
   const lists = useMemo(
     () => Array.from(new Set(places.map((p) => p.list_name))),
     [places]
   );
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(focusId ?? null);
+
+  // Arriving from the list view centres on that place instead of the whole city.
+  const focused = focusId ? places.find((p) => p.id === focusId) : undefined;
 
   const visible = places.filter((p) => !hidden.has(p.list_name));
   const selected = places.find((p) => p.id === selectedId) ?? null;
@@ -64,8 +67,8 @@ export default function DubaiMap({ apiKey, mapId, places }: Props) {
     <APIProvider apiKey={apiKey} libraries={["places"]}>
       <Map
         className="absolute inset-0 h-full w-full"
-        defaultCenter={DUBAI_CENTER}
-        defaultZoom={11}
+        defaultCenter={focused ? { lat: focused.lat, lng: focused.lng } : DUBAI_CENTER}
+        defaultZoom={focused ? 15 : 11}
         minZoom={9}
         // A Map ID switches Google to a vector (WebGL) map, which supports tilt/rotation
         // and cloud-based styling. Without one we fall back to a raster map + inline styles.

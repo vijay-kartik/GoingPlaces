@@ -1,6 +1,6 @@
 "use client";
 
-import type { Place } from "@/lib/places";
+import { shortAddress, type Place } from "@/lib/places";
 
 type Props = { place: Place; colour: string; onClose: () => void };
 
@@ -41,7 +41,9 @@ export default function PlaceCard({ place, colour, onClose }: Props) {
               </p>
             )}
             {place.address && (
-              <p className="mt-0.5 truncate text-xs text-foreground/60">{place.address}</p>
+              <p className="mt-0.5 truncate text-xs text-foreground/60">
+                {shortAddress(place.address)}
+              </p>
             )}
             {place.editorial_summary && (
               <p className="mt-2 text-sm leading-relaxed text-foreground/80">

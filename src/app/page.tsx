@@ -1,12 +1,18 @@
 import { auth, authConfigured, isAllowed } from "@/auth";
+import AppMenu from "@/components/AppMenu";
 import DubaiMap from "@/components/DubaiMap";
 import Gate from "@/components/Gate";
 import UserMenu from "@/components/UserMenu";
 import { fetchPlaces } from "@/lib/places";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ place?: string }>;
+}) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID;
+  const { place: focusId } = await searchParams;
 
   // Gate the whole page behind an invited Google account. When OAuth isn't configured
   // (local dev without credentials) the map is shown ungated so the UI can still be worked on.
@@ -19,7 +25,11 @@ export default async function Home() {
 
   return (
     <main className="relative h-full w-full">
-      {apiKey ? <DubaiMap apiKey={apiKey} mapId={mapId} places={places} /> : <MissingKey />}
+      {apiKey ? (
+        <DubaiMap apiKey={apiKey} mapId={mapId} places={places} focusId={focusId} />
+      ) : (
+        <MissingKey />
+      )}
 
       {/* Floating chrome over the map */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))]">
@@ -32,8 +42,9 @@ export default async function Home() {
             {places.length === 0 ? "No places yet" : `${places.length} saved places`}
           </p>
         </div>
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto flex items-center gap-2">
           <UserMenu />
+          <AppMenu />
         </div>
       </div>
     </main>
