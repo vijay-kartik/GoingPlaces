@@ -2,6 +2,7 @@ import { auth, authConfigured, isAllowed } from "@/auth";
 import DubaiMap from "@/components/DubaiMap";
 import Gate from "@/components/Gate";
 import UserMenu from "@/components/UserMenu";
+import { fetchPlaces } from "@/lib/places";
 
 export default async function Home() {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -14,9 +15,11 @@ export default async function Home() {
     if (!isAllowed(session?.user?.email)) return <Gate />;
   }
 
+  const places = await fetchPlaces();
+
   return (
     <main className="relative h-full w-full">
-      {apiKey ? <DubaiMap apiKey={apiKey} mapId={mapId} /> : <MissingKey />}
+      {apiKey ? <DubaiMap apiKey={apiKey} mapId={mapId} places={places} /> : <MissingKey />}
 
       {/* Floating chrome over the map */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4 pt-[max(1rem,env(safe-area-inset-top))]">
@@ -25,6 +28,9 @@ export default async function Home() {
             Honeymoon trip
           </p>
           <h1 className="text-xl font-semibold leading-tight">Dubai</h1>
+          <p className="mt-0.5 text-xs text-foreground/60">
+            {places.length === 0 ? "No places yet" : `${places.length} saved places`}
+          </p>
         </div>
         <div className="pointer-events-auto">
           <UserMenu />
