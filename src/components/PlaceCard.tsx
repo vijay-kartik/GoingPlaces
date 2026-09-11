@@ -27,11 +27,29 @@ export default function PlaceCard({ place, colour, onClose }: Props) {
               {place.category ? ` · ${place.category}` : ""}
             </p>
             <h2 className="truncate text-lg font-semibold leading-tight">{place.name}</h2>
+            {place.rating !== null && (
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-foreground/70">
+                <span aria-hidden className="text-gold">
+                  ★
+                </span>
+                <span className="font-semibold text-foreground/90">{place.rating.toFixed(1)}</span>
+                {place.user_rating_count !== null && (
+                  <span className="text-foreground/50">
+                    ({place.user_rating_count.toLocaleString()})
+                  </span>
+                )}
+              </p>
+            )}
             {place.address && (
               <p className="mt-0.5 truncate text-xs text-foreground/60">{place.address}</p>
             )}
+            {place.editorial_summary && (
+              <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+                {place.editorial_summary}
+              </p>
+            )}
             {place.note && (
-              <p className="mt-2 text-sm leading-relaxed text-foreground/80">{place.note}</p>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/60">{place.note}</p>
             )}
           </div>
           <button

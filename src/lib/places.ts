@@ -11,6 +11,9 @@ export type Place = {
   note: string | null;
   address: string | null;
   maps_url: string | null;
+  rating: number | null;
+  user_rating_count: number | null;
+  editorial_summary: string | null;
 };
 
 export const supabaseConfigured = Boolean(
@@ -29,7 +32,9 @@ export async function fetchPlaces(): Promise<Place[]> {
   if (!supabaseConfigured) return [];
   const { data, error } = await client()
     .from("places")
-    .select("id,name,lat,lng,google_place_id,list_name,category,note,address,maps_url")
+    .select(
+      "id,name,lat,lng,google_place_id,list_name,category,note,address,maps_url,rating,user_rating_count,editorial_summary"
+    )
     .order("list_name")
     .order("name");
   if (error) {
