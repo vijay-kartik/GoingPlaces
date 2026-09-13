@@ -17,7 +17,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="h-full overflow-hidden">{children}</body>
+      {/* Scrolling is locked per-screen, not here: the map fills the viewport and must not
+          scroll, but list screens need the document to scroll normally. */}
+      <body className="h-full">{children}</body>
     </html>
   );
 }

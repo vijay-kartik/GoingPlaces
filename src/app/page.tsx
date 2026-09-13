@@ -24,7 +24,7 @@ export default async function Home({
   const places = await fetchPlaces();
 
   return (
-    <main className="relative h-full w-full">
+    <main className="relative h-full w-full overflow-hidden">
       {apiKey ? (
         <DubaiMap apiKey={apiKey} mapId={mapId} places={places} focusId={focusId} />
       ) : (
