@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 const ITEMS = [
   { href: "/", label: "Map" },
   { href: "/places", label: "All places" },
+  { href: "/tickets", label: "Flights" },
 ];
 
 export default function AppMenu() {
